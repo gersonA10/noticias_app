@@ -4,39 +4,82 @@ import 'package:flutter/material.dart';
 import 'package:noticias_app/models/news_model.dart';
 import 'package:http/http.dart' as http;
 
-
 String _apiKey = 'pub_18599e0928443ca56e14da79d622b60bcd62b';
 String _language = 'language=es';
-String url = 'https://newsdata.io/api/1/news?apiKey=$_apiKey&$_language';
+String url = 'https://newsdata.io/api/1/news';
 
 TextEditingController search = TextEditingController();
 
 class NewsProvider extends ChangeNotifier {
-    
-  TextEditingController search = TextEditingController();
+  TextEditingController searchController = TextEditingController();
   List<NewsResultModel> newsList = [];
+  bool isLoading = false;
 
-  NewsProvider(){
-    getApi();
+  NewsProvider() {
+    getNews();
   }
 
-
-  void getApi() async {
-    final response = await http.get(Uri.parse(url));
-
-    final data = newsModelFromJson(const Utf8Decoder().convert(response.bodyBytes));
-    newsList.addAll(data.results);
-    // print(url+"&q=pizza");
+  Future<void> getNews({String query = '', String language = 'es'}) async {
+    isLoading = true;
     notifyListeners();
+
+    try {
+      final uri = Uri.parse(url).replace(
+        queryParameters: {
+          'apiKey': _apiKey,
+          'language': language,
+          if (query.trim().isNotEmpty) 'q': query.trim(),
+          // 'q':
+        },
+      );
+
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        final data = newsModelFromJson(
+          const Utf8Decoder().convert(response.bodyBytes),
+        );
+
+        newsList = data.results;
+        notifyListeners();
+      } else {
+        newsList = [];
+      }
+    } catch (e) {
+     newsList = [];
+    }
   }
 
-  void getApip(String valor) async{
-    // newsList.clear();
-    String busqueda = "&q=$valor";
-    final response = await http.get(Uri.parse(url+busqueda));
-    final datanew = newsModelFromJson(const Utf8Decoder().convert(response.bodyBytes));
-    newsList = datanew.results;
-    notifyListeners();
+  Future<void> searchNews(String text)async{
+    await getNews(query: text);
   }
 
+   Future<void> changeLanguage(String language)async{
+    await getNews(language: language);
+  }
+
+
+    Future<void> clearSearch()async{
+    await getNews();
+  }
+
+
+
+  // void getApi() async {
+  //   final response = await http.get(Uri.parse(url));
+
+  //   final data = newsModelFromJson(const Utf8Decoder().convert(response.bodyBytes));
+  //   newsList.addAll(data.results);
+  //   // print(url+"&q=pizza");
+  //   notifyListeners();
+  // }
+
+  // void getApip(String valor) async{
+  //   // newsList.clear();
+  //   String busqueda = "&q=$valor";
+  //   final response = await http.get(Uri.parse(url+busqueda));
+  //   final datanew = newsModelFromJson(const Utf8Decoder().convert(response.bodyBytes));
+  //   newsList = datanew.results;
+  //   notifyListeners();
+  // }
 }

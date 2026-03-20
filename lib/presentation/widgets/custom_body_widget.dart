@@ -18,17 +18,21 @@ class CustomBody extends StatelessWidget {
           margin: EdgeInsets.all(8),
           child: Row(
             children: [
-              // Text('hola'),
+              IconButton(onPressed: (){listprovider.searchController.clear();}, icon: Icon(Icons.cancel_rounded)),
               Expanded(
                 child: TextFormField(
-                  controller: listprovider.search,
-                  onFieldSubmitted: listprovider.getApip,
+                  controller: listprovider.searchController,
+                  onFieldSubmitted: (value){
+                    listprovider.searchNews(value);
+                  },
                   decoration: InputDecoration(
+                    hintText: 'Buscar',
                     suffixIcon: IconButton(
                       onPressed: () {
+                        listprovider.searchNews(listprovider.searchController.text);
                         // listprovider.getApip(listprovider.search.text);
                       },
-                      icon: Icon(Icons.ad_units_rounded),
+                      icon: Icon(Icons.search),
                     ),
                     border: OutlineInputBorder(),
                   ),
