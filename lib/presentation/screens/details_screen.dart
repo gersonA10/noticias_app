@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:noticias_app/models/news_model.dart';
+import 'package:noticias_app/presentation/widgets/custom_detail_widget.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key});
@@ -13,6 +14,7 @@ class DetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(arguments.title),
       ),
+      body: CustomDetailWidget(noticias: arguments),
     );
   }
 }
