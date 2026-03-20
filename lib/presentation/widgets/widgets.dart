@@ -1,0 +1,1 @@
+export 'package:noticias_app/presentation/widgets/custom_body_widget.dart';
