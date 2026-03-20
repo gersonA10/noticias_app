@@ -5,21 +5,29 @@ import 'package:noticias_app/models/news_model.dart';
 import 'package:http/http.dart' as http;
 
 String _apiKey = 'pub_18599e0928443ca56e14da79d622b60bcd62b';
-String _language = 'language=es';
+// String _language = 'language=es';
 String url = 'https://newsdata.io/api/1/news';
 
 TextEditingController search = TextEditingController();
 
 class NewsProvider extends ChangeNotifier {
+  TextEditingController languageController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
   TextEditingController searchController = TextEditingController();
+  List<String> idiomas = ['es', 'en', 'fr', 'pt'];
+  List<String> paises = ['bo', 'us', 'mx', 'cl'];
+  String? language;
+  String? country;
+
   List<NewsResultModel> newsList = [];
+
   bool isLoading = false;
 
   NewsProvider() {
     getNews();
   }
 
-  Future<void> getNews({String query = '', String language = 'es'}) async {
+  Future<void> getNews({String query = '', String language = 'es', String country = 'us'}) async {
     isLoading = true;
     notifyListeners();
 
@@ -27,8 +35,9 @@ class NewsProvider extends ChangeNotifier {
       final uri = Uri.parse(url).replace(
         queryParameters: {
           'apiKey': _apiKey,
-          'language': language,
           if (query.trim().isNotEmpty) 'q': query.trim(),
+          if (language.trim().isNotEmpty) 'language': language.trim(),
+          if (country.trim().isNotEmpty) 'country': country.trim(),
           // 'q':
         },
       );
@@ -46,24 +55,21 @@ class NewsProvider extends ChangeNotifier {
         newsList = [];
       }
     } catch (e) {
-     newsList = [];
+      newsList = [];
     }
   }
 
-  Future<void> searchNews(String text)async{
+  Future<void> searchNews(String text) async {
     await getNews(query: text);
   }
 
-   Future<void> changeLanguage(String language)async{
-    await getNews(language: language);
+  Future<void> changeFilters(String language, String country) async {
+    await getNews(language: language, country: country);
   }
 
-
-    Future<void> clearSearch()async{
+  Future<void> clearSearch() async {
     await getNews();
   }
-
-
 
   // void getApi() async {
   //   final response = await http.get(Uri.parse(url));

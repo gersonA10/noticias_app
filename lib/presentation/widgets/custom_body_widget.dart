@@ -18,18 +18,27 @@ class CustomBody extends StatelessWidget {
           margin: EdgeInsets.all(8),
           child: Row(
             children: [
-              IconButton(onPressed: (){listprovider.searchController.clear();}, icon: Icon(Icons.cancel_rounded)),
+              IconButton(
+                onPressed: () {
+                  listprovider.searchController.clear();
+                  listprovider.languageController.clear();
+                  listprovider.countryController.clear();
+                },
+                icon: Icon(Icons.cancel_rounded),
+              ),
               Expanded(
                 child: TextFormField(
                   controller: listprovider.searchController,
-                  onFieldSubmitted: (value){
+                  onFieldSubmitted: (value) {
                     listprovider.searchNews(value);
                   },
                   decoration: InputDecoration(
                     hintText: 'Buscar',
                     suffixIcon: IconButton(
                       onPressed: () {
-                        listprovider.searchNews(listprovider.searchController.text);
+                        listprovider.searchNews(
+                          listprovider.searchController.text,
+                        );
                         // listprovider.getApip(listprovider.search.text);
                       },
                       icon: Icon(Icons.search),
@@ -37,6 +46,58 @@ class CustomBody extends StatelessWidget {
                     border: OutlineInputBorder(),
                   ),
                 ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Filters'),
+              Row(
+                children: [
+                  DropdownMenu(
+                    width: 100,
+                    enableFilter: true,
+                    label: Text('Lang'),
+                    inputDecorationTheme: const InputDecorationTheme(
+                      contentPadding: EdgeInsets.all(5),
+                    ),
+                    controller: listprovider.languageController,
+                    dropdownMenuEntries: listprovider.idiomas.map((e) {
+                      return DropdownMenuEntry(value: e, label: e);
+                    }).toList(),
+                  ),
+                  DropdownMenu(
+                    width: 150,
+                    label: Text('Country'),
+                    controller: listprovider.countryController,
+                    enableFilter: true,
+                    inputDecorationTheme: InputDecorationTheme(
+                      filled: false,
+                    ),
+                    dropdownMenuEntries: listprovider.paises.map((e) {
+                      return DropdownMenuEntry(value: e, label: e);
+                    }).toList(),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(30)
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          listprovider.changeFilters(listprovider.languageController.text, listprovider.countryController.text);
+                        },
+                        child: Center(child: Text('Apply')),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ],
           ),
