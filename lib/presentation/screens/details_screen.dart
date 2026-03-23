@@ -11,9 +11,10 @@ class DetailsScreen extends StatelessWidget {
    final NewsResultModel arguments = ModalRoute.of(context)!.settings.arguments as NewsResultModel;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(arguments.title),
-      ),
+      // appBar: AppBar(
+      //   // title: Text(arguments.title),
+      //   backgroundColor: Colors.transparent,
+      // ),
       body: CustomDetailWidget(noticias: arguments),
     );
   }

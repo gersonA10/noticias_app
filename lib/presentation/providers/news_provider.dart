@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:noticias_app/models/news_model.dart';
 import 'package:http/http.dart' as http;
 
-String _apiKey = 'pub_18599e0928443ca56e14da79d622b60bcd62b';
+String _apiKey = 'pub_68f1e23e76fb49dab0fe92f98ce3e803';
 // String _language = 'language=es';
-String url = 'https://newsdata.io/api/1/news';
+String url = 'https://newsdata.io/api/1/';
 
 TextEditingController search = TextEditingController();
 
@@ -16,6 +16,16 @@ class NewsProvider extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();
   List<String> idiomas = ['es', 'en', 'fr', 'pt'];
   List<String> paises = ['bo', 'us', 'mx', 'cl'];
+
+  List<Map<String, String>> categoria = [
+    {'categoria': 'news', 'nombre': 'All'},
+    {'categoria': 'latest', 'nombre': 'ultimas'},
+    {'categoria': 'market', 'nombre': 'Mercado'},
+    {'categoria': 'crypto', 'nombre': 'Crypto'},
+    {'categoria': 'sources', 'nombre': 'Detalles'},
+  ];
+  String? endpoint;
+
   String? language;
   String? country;
 
@@ -27,14 +37,19 @@ class NewsProvider extends ChangeNotifier {
     getNews();
   }
 
-  Future<void> getNews({String query = '', String language = 'es', String country = 'us'}) async {
+  Future<void> getNews({
+    String endpoint = 'news',
+    String query = '',
+    String language = 'es',
+    String country = '',
+  }) async {
     isLoading = true;
     notifyListeners();
-
+    
     try {
-      final uri = Uri.parse(url).replace(
+      final uri = Uri.parse(url + endpoint).replace(
         queryParameters: {
-          'apiKey': _apiKey,
+          'apikey': _apiKey,
           if (query.trim().isNotEmpty) 'q': query.trim(),
           if (language.trim().isNotEmpty) 'language': language.trim(),
           if (country.trim().isNotEmpty) 'country': country.trim(),
@@ -61,6 +76,11 @@ class NewsProvider extends ChangeNotifier {
 
   Future<void> searchNews(String text) async {
     await getNews(query: text);
+  }
+
+  Future<void> changeCategory(String endpoint) async {
+    await getNews(endpoint: endpoint);
+    // newsList.clear();
   }
 
   Future<void> changeFilters(String language, String country) async {

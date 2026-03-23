@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import '../widgets/widgets.dart';
 // import 'package:noticias_app/presentation/widgets/custom_body_widget.dart';
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -15,9 +14,16 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Noticias App'),
+        leading: Container(
+          child: IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/pokemon');
+            },
+            icon: Icon(Icons.catching_pokemon),
+          ),
+        ),
       ),
-      body: CustomBody(news: newsProvider.newsList,),
+      body: CustomBody(news: newsProvider.newsList),
     );
   }
 }
-

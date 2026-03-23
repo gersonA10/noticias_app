@@ -75,9 +75,7 @@ class CustomBody extends StatelessWidget {
                     label: Text('Country'),
                     controller: listprovider.countryController,
                     enableFilter: true,
-                    inputDecorationTheme: InputDecorationTheme(
-                      filled: false,
-                    ),
+                    inputDecorationTheme: InputDecorationTheme(filled: false),
                     dropdownMenuEntries: listprovider.paises.map((e) {
                       return DropdownMenuEntry(value: e, label: e);
                     }).toList(),
@@ -87,19 +85,56 @@ class CustomBody extends StatelessWidget {
                       height: 50,
                       decoration: BoxDecoration(
                         color: Colors.grey,
-                        borderRadius: BorderRadius.circular(30)
+                        borderRadius: BorderRadius.circular(30),
                       ),
                       child: GestureDetector(
                         onTap: () {
-                          listprovider.changeFilters(listprovider.languageController.text, listprovider.countryController.text);
+                          listprovider.changeFilters(
+                            listprovider.languageController.text,
+                            listprovider.countryController.text,
+                          );
+                          // print(
+                          //   listprovider.languageController.text +
+                          //       "  " +
+                          //       listprovider.countryController.text
+                          // );
                         },
                         child: Center(child: Text('Apply')),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ],
+          ),
+        ),
+        SizedBox(
+          height: 50,
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            scrollDirection: Axis.horizontal,
+            itemCount: listprovider.categoria.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                height: 30,
+                width: 80,
+                margin: EdgeInsets.symmetric(horizontal: 2),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    String cat = listprovider.categoria[index]['categoria']!;
+                    listprovider.changeCategory(cat);
+                    print(listprovider.categoria[index]['categoria']!);
+                  },
+                  child: Center(
+                    child: Text(listprovider.categoria[index]['nombre']!),
+                  ),
+                ),
+              );
+            },
           ),
         ),
         Expanded(
@@ -154,14 +189,16 @@ class CustomBody extends StatelessWidget {
                                 style: TextStyle(fontSize: 12),
                               ),
                               SizedBox(height: 10),
-                              Text(
-                                // noticia.creator?.first ?? '',
-                                noticia.creator!.isEmpty
-                                    ? 'Sin autor'
-                                    : noticia.creator![0],
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 12),
+                              Expanded(
+                                child: Text(
+                                  // noticia.creator?.first ?? '',
+                                  noticia.creator!.isEmpty
+                                      ? 'Sin autor'
+                                      : noticia.creator![0],
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 12),
+                                ),
                               ),
                               Text(
                                 noticia.pubDate.toString(),
