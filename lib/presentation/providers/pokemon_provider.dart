@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:noticias_app/models/list_pokemon_model.dart';
-import 'package:noticias_app/models/pokemon_model.dart';
+// import 'package:noticias_app/models/pokemon_model.dart';
 
 String url = "https://pokeapi.co/api/v2/pokemon";
 
